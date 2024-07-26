@@ -21,6 +21,8 @@ import * as React from 'react';
 
 import { GridMenuIcon } from '@mui/x-data-grid';
 import Image from 'next/image';
+import { ReactElement, useState } from 'react';
+import { GridView, Notifications } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -94,6 +96,17 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function ColinkSidebar() {
+    interface ColinkSidebarItem {
+        description: string,
+        icon: ReactElement,
+        route: string,
+    }
+
+    const [sidebarItems, setSidebarItems] = useState<ColinkSidebarItem[]>([
+        { description: 'Página Inicial', icon: <GridView />, route: '/' },
+        { description: 'Notificações', icon: <Notifications />, route: 'pages/notifications' }
+    ])
+
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
 
@@ -136,14 +149,15 @@ export default function ColinkSidebar() {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                    {sidebarItems.map((navbarItem, index) => (
+                        <ListItem key={index} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
                                     px: 2.5,
                                 }}
+                                href={navbarItem.route}
                             >
                                 <ListItemIcon
                                     sx={{
@@ -152,9 +166,9 @@ export default function ColinkSidebar() {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                    {navbarItem.icon}
                                 </ListItemIcon>
-                                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                                <ListItemText primary={navbarItem.description} sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
                         </ListItem>
                     ))}
